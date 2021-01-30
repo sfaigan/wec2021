@@ -1,21 +1,14 @@
-import React, { useEffect } from "react";
-import { useExamplesAPI } from "../hooks";
-import { Example } from "../types";
+import React from "react";
+import { Lobby } from "./example";
+import { SocketProvider } from "./sockets/context";
 
 export const App = (): JSX.Element => {
-  const { examples, getExamples, addExample, deleteExample } = useExamplesAPI();
-
-  useEffect(() => {
-    getExamples();
-  }, []);
-
   return (
-    <div>
-      <ul>
-        {examples.map((example: Example) => (
-          <li>{`${example.foo} - ${example.bar}`}</li>
-        ))}
-      </ul>
-    </div>
+    <SocketProvider>
+      <div>
+        <h1>WEC APP</h1>
+        <Lobby />
+      </div>
+    </SocketProvider>
   );
 };
