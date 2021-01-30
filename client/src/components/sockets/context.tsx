@@ -5,6 +5,8 @@ import { initSockets } from "./sockets";
 export type Store = {
   queueLength: number;
   positionInLine: number;
+  news: string;
+  roomId?: string;
 };
 
 export const SocketProvider = (props: {
@@ -13,6 +15,7 @@ export const SocketProvider = (props: {
   const [value, setValue] = useState<Store>({
     queueLength: 0,
     positionInLine: 0,
+    news: "",
   });
   useEffect(() => initSockets({ setValue }), [initSockets]);
 

@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import * as http from "http";
 import examplesRouter from "./routes/examples";
 import path from "path";
 import { Socket } from "socket.io";
+import { generateId } from "./utils";
 
 dotenv.config();
 
@@ -21,9 +22,7 @@ app.use(
   express.static(path.join(__dirname, CLIENT_BUILD_RELATIVE_PATH + "/static"))
 );
 
-const server = new http.Server(app);
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
 try {
@@ -46,32 +45,41 @@ app.use("/api/examples", examplesRouter);
 
 io.on("connection", (socket: Socket) => {
   console.log("Connected succesfully to the socket ...");
+  // Example: Send news on the socket
+  socket.emit("news", "Hello, world");
 
-  const news = [
-    {
-      title: "The cure of the Sadness is to play Videogames",
-      date: "04.10.2016",
-    },
-    {
-      title: "Batman saves Racoon City, the Joker is infected once again",
-      date: "05.10.2016",
-    },
-    {
-      title: "Deadpool doesn't want to do a third part of the franchise",
-      date: "05.10.2016",
-    },
-    {
-      title:
-        "Quicksilver demand Warner Bros. due to plagiarism with Speedy Gonzales",
-      date: "04.10.2016",
-    },
-  ];
+  // Creating a game
+  socket.on("game/create", () => {
+    console.log(`User ${socket.id} created a game`);
+    // the new user, generate random room id
+    const roomId = generateId(4);
 
-  // Send news on the socket
-  socket.emit("news", news);
+    // const user = { id: s.id, roomId };
+    console.log(`${socket.id} user has create and joined room ${roomId}`);
 
-  socket.on("my other event", (data) => {
-    console.log(data);
+    socket.join(roomId);
+
+    // emit an notification that the game (lobby) was created successfully with the game code.
+    io.to(roomId).emit("game/success", { code: roomId });
+  });
+
+  // Joining a game using a game code
+  socket.on("game/join", (code: string) => {
+    console.log(`User ${socket.id} is to joining ${code}`);
+    socket.join(code);
+    socket.emit("game/success", { code });
+  });
+
+  // a basic ping that pings the entire lobby
+  socket.on("game/ping", (msg: string) => {
+    console.log(msg);
+    io.to(socket.rooms).emit("game/pong", { msg });
+  });
+
+  // Leaving a game
+  // TODO
+  socket.on("game/leave", (s: Socket) => {
+    console.log(`User ${s.id} left the game`);
   });
 });
 
