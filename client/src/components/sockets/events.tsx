@@ -7,19 +7,31 @@ type Props = {
 };
 
 export const socketEvents = ({ setValue }: Props): void => {
-  socket.on("opponentMoved", ({ position }) => {
+  socket.on("news", (news: string) => {
+    console.log(news);
     setValue((state) => {
-      return { ...state, position };
+      return { ...state, news };
     });
   });
 
-  socket.on("queueLength", ({ queueLength }) => {
+  socket.on("game/pong", (msg: string) => {
+    console.log(msg);
+  });
+
+  socket.on("game/success", ({ code }: { code: string }) => {
+    console.log(code);
+    setValue((state) => {
+      return { ...state, roomId: code };
+    });
+  });
+
+  socket.on("queueLength", (queueLength: number) => {
     setValue((state) => {
       return { ...state, queueLength };
     });
   });
 
-  socket.on("positionInLine", ({ positionInLine }) => {
+  socket.on("positionInLine", (positionInLine: number) => {
     setValue((state) => {
       return { ...state, positionInLine };
     });
