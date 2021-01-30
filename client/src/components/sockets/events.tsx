@@ -18,7 +18,7 @@ export const socketEvents = ({ setValue }: Props): void => {
     console.log(msg);
   });
 
-  socket.on("game/success", (code: string) => {
+  socket.on("game/success", ({ code }: { code: string }) => {
     console.log(code);
     setValue((state) => {
       return { ...state, roomId: code };

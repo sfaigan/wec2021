@@ -22,7 +22,7 @@ export const Lobby = (): JSX.Element => {
         Create Game
       </Button>
       <Button primary onClick={() => sendPing("PING")}>
-        Create Game
+        Ping
       </Button>
     </Box>
   );
