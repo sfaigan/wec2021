@@ -5,8 +5,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import examplesRouter from "./routes/examples";
 import path from "path";
-import { Socket } from "socket.io";
+import { Socket, Server } from "socket.io";
 import { generateId } from "./utils";
+import { createServer } from "http";
 
 dotenv.config();
 
@@ -22,8 +23,9 @@ app.use(
   express.static(path.join(__dirname, CLIENT_BUILD_RELATIVE_PATH + "/static"))
 );
 
-const server = require("http").createServer(app);
-const io = require("socket.io")(server);
+const server = createServer(app);
+// TODO: fix importing style
+const io = require("socket.io")(server) as Server;
 
 try {
   mongoose.connect(DB_URI, {
