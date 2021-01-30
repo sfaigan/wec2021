@@ -3,7 +3,6 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import examplesRouter from "./routes/examples";
 import path from "path";
 import { Socket, Server } from "socket.io";
 import { generateId } from "./utils";
@@ -42,8 +41,6 @@ const connection = mongoose.connection;
 connection.once("open", () => {
   console.log("MongoDB database connection established successfully");
 });
-
-app.use("/api/examples", examplesRouter);
 
 // TODO: temp;
 let users = {};
