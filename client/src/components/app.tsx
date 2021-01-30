@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useExamplesAPI } from "../hooks";
+import { Example } from "../types";
 
 export const App = (): JSX.Element => {
   const { examples, getExamples, addExample, deleteExample } = useExamplesAPI();
@@ -12,9 +13,7 @@ export const App = (): JSX.Element => {
     <div>
       <ul>
         {examples.map((example: Example) => (
-          <li>
-            {`${example.foo} - ${example.bar}`}
-          </li>
+          <li>{`${example.foo} - ${example.bar}`}</li>
         ))}
       </ul>
     </div>
