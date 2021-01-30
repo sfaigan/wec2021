@@ -45,6 +45,9 @@ connection.once("open", () => {
 
 app.use("/api/examples", examplesRouter);
 
+// TODO: temp;
+let users = {};
+
 io.on("connection", (socket: Socket) => {
   console.log("Connected succesfully to the socket ...");
   // Example: Send news on the socket
@@ -63,6 +66,7 @@ io.on("connection", (socket: Socket) => {
 
     // emit an notification that the game (lobby) was created successfully with the game code.
     io.to(roomId).emit("game/success", { code: roomId });
+    users = { ...users, [socket.id]: { room: roomId } };
   });
 
   // Joining a game using a game code
@@ -75,7 +79,6 @@ io.on("connection", (socket: Socket) => {
   // a basic ping that pings the entire lobby
   socket.on("game/ping", (msg: string) => {
     console.log(msg);
-    io.to(socket.rooms).emit("game/pong", { msg });
   });
 
   // Leaving a game
