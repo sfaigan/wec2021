@@ -1,29 +1,20 @@
 import { Schema } from "mongoose";
 
-export interface Position {
-  x: number;
-  y: number;
-}
-
 export interface Piece {
   pieceType: string;
-  position: Position;
   colour: string;
 }
 
-interface Square {
-  piece: Piece;
+export interface Square {
+  piece?: Piece;
   colour: string;
 }
 
 const SquareSchema = new Schema(
   {
     piece: {
+      required: false,
       pieceType: String,
-      position: {
-        x: Number,
-        y: Number,
-      },
       colour: {
         type: String,
         enum: ["white", "black"],

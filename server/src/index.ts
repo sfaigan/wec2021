@@ -7,6 +7,7 @@ import path from "path";
 import { Socket, Server } from "socket.io";
 import { generateId } from "./utils";
 import { createServer } from "http";
+import gamesRouter from "./routes/games";
 
 dotenv.config();
 
@@ -41,6 +42,8 @@ const connection = mongoose.connection;
 connection.once("open", () => {
   console.log("MongoDB database connection established successfully");
 });
+
+app.use("/api/games", gamesRouter);
 
 // TODO: temp;
 let users = {};
