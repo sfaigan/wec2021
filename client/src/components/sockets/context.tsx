@@ -3,21 +3,18 @@ import SocketContext from "./socketContext";
 import { initSockets } from "./sockets";
 
 export type Store = {
-  queueLength: number;
-  positionInLine: number;
-  news: string;
   roomId?: string;
+  socketId?: string;
+  game?: any;
 };
 
 export const SocketProvider = (props: {
   children: JSX.Element;
 }): JSX.Element => {
-  const [value, setValue] = useState<Store>({
-    queueLength: 0,
-    positionInLine: 0,
-    news: "",
-  });
-  useEffect(() => initSockets({ setValue }), [initSockets]);
+  const [value, setValue] = useState<Store>({});
+  useEffect(() => {
+    initSockets({ setValue });
+  }, [initSockets]);
 
   return (
     <SocketContext.Provider value={value}>

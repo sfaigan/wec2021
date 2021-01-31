@@ -5,14 +5,21 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
 import { Socket, Server } from "socket.io";
-import { generateId } from "./utils";
 import { createServer } from "http";
-import gamesRouter from "./routes/games";
+import { getGamesRouter } from "./routes/games";
+import { Colour } from "./constants";
+import { Game } from "./models/game";
+import { generateBoard } from "./utils/board";
+import { MoveRequest } from "./types";
 
 dotenv.config();
 
 const PORT = process.env.SERVER_PORT || 3001;
-const DB_URI = process.env.DB_URI || "mongodb://127.0.0.1:27017/wec2021";
+const NODE_ENV = process.env.NODE_ENV || "development";
+const DB_URI =
+  NODE_ENV === "production"
+    ? `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_URL}/${process.env.DB_NAME}?retryWrites=true&w=majority`
+    : "mongodb://127.0.0.1:27017/wec2021";
 const CLIENT_BUILD_RELATIVE_PATH = "../../client/build";
 
 const app = express();
@@ -43,42 +50,59 @@ connection.once("open", () => {
   console.log("MongoDB database connection established successfully");
 });
 
-app.use("/api/games", gamesRouter);
-
-// TODO: temp;
-let users = {};
+app.use("/api/games", getGamesRouter(io));
 
 io.on("connection", (socket: Socket) => {
   console.log("Connected succesfully to the socket ...");
   // Example: Send news on the socket
   socket.emit("news", "Hello, world");
 
-  // Creating a game
-  socket.on("game/create", () => {
-    console.log(`User ${socket.id} created a game`);
-    // the new user, generate random room id
-    const roomId = generateId(4);
+  socket.on("game/create", async (size: number) => {
+    console.log("game/create");
+    const board = generateBoard(size);
+    const turn = Colour.WHITE;
+    const game = new Game({ board, turn });
+    try {
+      const result = await game.save();
+      const roomId = result._id;
+      // join the game
+      socket.join(roomId);
 
-    // const user = { id: s.id, roomId };
-    console.log(`${socket.id} user has create and joined room ${roomId}`);
+      // emit a notification that the game (lobby) was created successfully with the game code.
+      io.to(roomId).emit("game/success", { code: roomId, game: result });
+    } catch (error) {
+      console.error(error);
+    }
+  });
 
-    socket.join(roomId);
+  socket.on("game/update", async (move: MoveRequest, id: string) => {
+    try {
+      // grab the game via id
+      const game = await Game.findById(id);
 
-    // emit an notification that the game (lobby) was created successfully with the game code.
-    io.to(roomId).emit("game/success", { code: roomId });
-    users = { ...users, [socket.id]: { room: roomId } };
+      // do updates
+
+      // save
+
+      // emit results to clients
+      io.to(id).emit("game/update", { game: game });
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   // Joining a game using a game code
-  socket.on("game/join", (code: string) => {
-    console.log(`User ${socket.id} is to joining ${code}`);
-    socket.join(code);
-    socket.emit("game/success", { code });
-  });
-
-  // a basic ping that pings the entire lobby
-  socket.on("game/ping", (msg: string) => {
-    console.log(msg);
+  socket.on("game/join", async (id: string) => {
+    console.log(`User ${socket.id} is to joining ${id}`);
+    try {
+      const game = await Game.findById(id);
+      if (game) {
+        socket.join(id);
+        io.to(id).emit("game/success", { code: id, game });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   // Leaving a game

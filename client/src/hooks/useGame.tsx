@@ -1,23 +1,25 @@
 import { useContext } from "react";
+import { gameCreate, gameJoin } from "../components/sockets/emit";
 import SocketContext from "../components/sockets/socketContext";
-import { socket } from "../components/sockets/sockets";
 
 export const useGame = (): {
-  createGame: () => null;
-  sendPing: (msg: string) => void;
+  createGame: () => void;
+  joinGame: (code: string) => Promise<void>;
+  roomId?: string;
+  socketId?: string;
+  game?: any;
 } => {
-  const { queueLength, news, roomId } = useContext(SocketContext);
+  const { socketId, roomId, game } = useContext(SocketContext);
 
   const createGame = () => {
-    socket.emit("game/create");
-    return null;
+    console.log("createGame");
+    gameCreate(8);
   };
 
-  const sendPing = (msg: string) => {
-    if (roomId) {
-      socket.emit("game/ping", { msg });
-    }
+  const joinGame = async (code: string) => {
+    console.log("joinGame");
+    gameJoin(code);
   };
 
-  return { createGame, sendPing };
+  return { createGame, joinGame, roomId, socketId, game };
 };
