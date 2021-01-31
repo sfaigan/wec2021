@@ -58,11 +58,18 @@ export const TEST = {
     ],
     [
       { colour: Colour.WHITE },
-      { colour: Colour.BLACK },
       {
         colour: Colour.WHITE,
         piece: {
-          pieceType: PieceType.KNIGHT,
+          pieceType: PieceType.ROOK,
+          colour: Colour.WHITE,
+        },
+      },
+
+      {
+        colour: Colour.WHITE,
+        piece: {
+          pieceType: PieceType.ROOK,
           colour: Colour.WHITE,
         },
       },

@@ -2,34 +2,49 @@
 import { Board, Piece } from "../models/board";
 import { Colour, PieceType } from "../constants";
 import { Position } from "../types";
-import { isCheck, isEnemyOccupied, isFriendlyOccupied } from "./board";
+import {
+  checkFilter,
+  isCheck,
+  isEnemyOccupied,
+  isFriendlyOccupied,
+} from "./board";
 
 export const move = (pos: Position, piece: Piece, board: Board): Position[] => {
+  let legalMoves: Position[] = [];
   switch (piece.pieceType.toLowerCase()) {
     case PieceType.PAWN: {
-      return movePawn(piece, pos, board);
+      legalMoves = movePawn(piece, pos, board);
+      break;
     }
     case PieceType.KNIGHT: {
-      return moveKnight(piece, pos, board);
+      legalMoves = moveKnight(piece, pos, board);
+      break;
     }
     case PieceType.BISHOP: {
-      return moveBishop(piece, pos, board);
+      legalMoves = moveBishop(piece, pos, board);
+      break;
     }
     case PieceType.ROOK: {
-      return moveRook(piece, pos, board);
+      legalMoves = moveRook(piece, pos, board);
+      break;
     }
     case PieceType.VANGUARD: {
-      return moveVanguard(piece, pos, board);
+      legalMoves = moveVanguard(piece, pos, board);
+      break;
     }
     case PieceType.QUEEN: {
-      return moveQueen(piece, pos, board);
+      legalMoves = moveQueen(piece, pos, board);
+      break;
     }
     case PieceType.KING: {
-      return moveKing(piece, pos, board);
+      legalMoves = moveKing(piece, pos, board);
+      break;
     }
   }
 
-  return [];
+  legalMoves = checkFilter(legalMoves, board, piece.colour);
+
+  return legalMoves;
 };
 
 // USE LIKE board[y][x] or board[j][i]
