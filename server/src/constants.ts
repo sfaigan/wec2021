@@ -13,6 +13,105 @@ export enum Colour {
   BLACK = "black",
 }
 
+export const TEST = {
+  size: 8,
+  squares: [
+    [
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+    ],
+    [
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+    ],
+    [
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+    ],
+    [
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+    ],
+    [
+      { colour: Colour.WHITE },
+      {
+        colour: Colour.WHITE,
+        piece: {
+          pieceType: PieceType.ROOK,
+          colour: Colour.WHITE,
+        },
+      },
+
+      {
+        colour: Colour.WHITE,
+        piece: {
+          pieceType: PieceType.ROOK,
+          colour: Colour.WHITE,
+        },
+      },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+    ],
+    [
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+    ],
+    [
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+    ],
+    [
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+      { colour: Colour.WHITE },
+      { colour: Colour.BLACK },
+    ],
+  ],
+};
+
 export const BOARD_8 = {
   size: 8,
   squares: [
