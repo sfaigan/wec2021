@@ -5,14 +5,17 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
 import { Socket, Server } from "socket.io";
-import { generateId } from "./utils";
 import { createServer } from "http";
 import { getGamesRouter } from "./routes/games";
 
 dotenv.config();
 
 const PORT = process.env.SERVER_PORT || 3001;
-const DB_URI = process.env.DB_URI || "mongodb://127.0.0.1:27017/wec2021";
+const NODE_ENV = process.env.NODE_ENV || "development";
+const DB_URI =
+  NODE_ENV === "production"
+    ? `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_URL}/${process.env.DB_NAME}?retryWrites=true&w=majority`
+    : "mongodb://127.0.0.1:27017/wec2021";
 const CLIENT_BUILD_RELATIVE_PATH = "../../client/build";
 
 const app = express();
