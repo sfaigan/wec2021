@@ -7,38 +7,36 @@ import {
   Square as SquareType,
   Position,
 } from "../types";
+import { gameUpdate } from "./sockets/emit";
+import { useGame } from "../hooks/useGame";
+
+export interface Piece {
+  pieceType: string;
+  colour: string;
+}
+
+export interface Square {
+  piece?: Piece;
+  colour: string;
+}
 
 interface Props {
   shade: string;
   board: BoardType;
   i: number;
   j: number;
+  onClick?: (i: number, y: number) => void;
 }
 
-let move = false;
-
 const Square: React.FC<Props> = (props) => {
-  const arr: Position[] = [];
-  const [oldSquare, setOldSquare] = useState(
-    props.board.squares[props.i][props.j]
-  );
-  const [square, setSquare] = useState(props.board.squares[props.i][props.j]);
-
   const onClick = () => {
-    console.log(props.i + " " + props.j);
-    if (!move) {
-      // setSquare(props.board.squares[props.i][props.j]);
-
-      move = true;
-    } else {
-      console.log("picked a spot for the piece");
-      move = false;
+    if (props.onClick) {
+      props.onClick(props.i, props.j);
     }
-    // console.log(props.i + " " + props.j);
   };
 
   return (
-    <button className={"square " + props.shade} onClick={onClick}>
+    <button className={"square " + props.shade} onClick={() => onClick()}>
       {props.i > 5 || props.i < 2
         ? props.board.squares[props.i][props.j].piece.pieceType
         : null}
@@ -50,13 +48,50 @@ const renderSquare = (
   squareShade: string,
   board: BoardType,
   i: number,
-  j: number
+  j: number,
+  onClick?: (i: number, y: number) => void
 ) => {
-  return <Square shade={squareShade} board={board} i={i} j={j} />;
+  return (
+    <Square shade={squareShade} board={board} i={i} j={j} onClick={onClick} />
+  );
 };
 
+export interface MoveRequest {
+  currentPos: { x: number; y: number };
+  newPos: { x: number; y: number };
+  piece: Piece;
+}
+
 export const Board: React.FC<{ board: BoardType }> = ({ board }) => {
-  console.log(board.squares[1][7].piece.pieceType);
+  const { roomId } = useGame();
+  const [select, setSelect] = useState(false);
+  const [lastPos, setLastPos] = useState<
+    { i: number; j: number } | undefined
+  >();
+
+  const handleClick = (i: number, j: number) => {
+    if (!select) {
+      console.log("first");
+      setLastPos({ i, j });
+      setSelect(true);
+    } else {
+      console.log("second");
+      console.log(i, j, select, lastPos);
+      setSelect(false);
+
+      if (lastPos && roomId) {
+        gameUpdate(
+          {
+            currentPos: { x: i, y: j },
+            newPos: { x: lastPos?.i, y: lastPos.j },
+            piece: board.squares[j][i].piece,
+          },
+          roomId
+        );
+      }
+    }
+  };
+
   const renderBoard: JSX.Element[] = [];
   for (let i = 0; i < 8; i++) {
     const squareRows: JSX.Element[] = [];
@@ -65,7 +100,9 @@ export const Board: React.FC<{ board: BoardType }> = ({ board }) => {
         board.squares[j][i].colour === Colour.WHITE
           ? "light-square"
           : "dark-square";
-      squareRows.push(renderSquare(/* i * 8 + j, */ squareShade, board, i, j));
+      squareRows.push(
+        renderSquare(/* i * 8 + j, */ squareShade, board, i, j, handleClick)
+      );
     }
     renderBoard.push(<div className="board-row">{squareRows}</div>);
   }

@@ -8,7 +8,7 @@ import { Socket, Server } from "socket.io";
 import { createServer } from "http";
 import { getGamesRouter } from "./routes/games";
 import { Colour } from "./constants";
-import { Game } from "./models/game";
+import { Game, GameDoc } from "./models/game";
 import { generateBoard } from "./utils/board";
 import { MoveRequest } from "./types";
 
@@ -55,7 +55,6 @@ app.use("/api/games", getGamesRouter(io));
 io.on("connection", (socket: Socket) => {
   console.log("Connected succesfully to the socket ...");
   // Example: Send news on the socket
-  socket.emit("news", "Hello, world");
 
   socket.on("game/create", async (size: number) => {
     console.log("game/create");
@@ -78,8 +77,9 @@ io.on("connection", (socket: Socket) => {
   socket.on("game/update", async (move: MoveRequest, id: string) => {
     try {
       // grab the game via id
-      const game = await Game.findById(id);
+      const game = (await Game.findById(id)) as GameDoc;
 
+      console.log(move, id);
       // do updates
 
       // save

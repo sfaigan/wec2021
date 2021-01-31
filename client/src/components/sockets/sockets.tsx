@@ -2,7 +2,6 @@ import React from "react";
 import type { Dispatch } from "react";
 import io from "socket.io-client";
 import { Store } from "./context";
-import { getQueueLength } from "./emit";
 import { socketEvents } from "./events";
 
 export const socket = io();

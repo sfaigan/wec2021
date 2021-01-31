@@ -14,6 +14,13 @@ export const socketEvents = ({ setValue }: Props): void => {
     });
   });
 
+  socket.on("game/update", (game: any) => {
+    console.log("game/update", game);
+    setValue((state) => {
+      return { ...state, game };
+    });
+  });
+
   socket.on("connection", () => {
     console.log("connection");
     setValue((state) => {

@@ -1,3 +1,4 @@
+import { MoveRequest } from "../board";
 import { socket } from "./sockets";
 
 export const addClientToQueue = () => {
@@ -18,6 +19,7 @@ export const gameJoin = (code: string): void => {
   socket.emit("game/create", { id: code });
 };
 
-export const gameUpdate = (): void => {
-  socket.emit("game/update", {});
+export const gameUpdate = (move: MoveRequest, id: string): void => {
+  console.log(move, id);
+  socket.emit("game/update", { move, id });
 };

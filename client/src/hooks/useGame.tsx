@@ -13,7 +13,7 @@ export const useGame = (): {
 
   const createGame = () => {
     console.log("createGame");
-    gameCreate(8);
+    gameCreate(12);
   };
 
   const joinGame = async (code: string) => {

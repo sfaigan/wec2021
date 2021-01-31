@@ -9,6 +9,7 @@ import {
 } from "grommet";
 import React, { useState } from "react";
 import { useGame } from "../hooks/useGame";
+import { Board } from "./board";
 
 export const Lobby = (): JSX.Element => {
   const [value, setValue] = useState("");
@@ -50,6 +51,7 @@ export const Lobby = (): JSX.Element => {
         <Box>
           <Paragraph>Game</Paragraph>
           <pre>{JSON.stringify(game)}</pre>
+          <Board board={game.board} />
         </Box>
       )}
     </Box>
