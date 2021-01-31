@@ -11,7 +11,6 @@ export const App = (): JSX.Element => {
           <Box>
             <Lobby />
           </Box>
-          <Box></Box>
         </Box>
       </SocketProvider>
     </Grommet>

@@ -287,7 +287,6 @@ const BOARD_8 = {
 ReactDOM.render(
   <React.StrictMode>
     <App />
-    <Board board={BOARD_8 as BoardType} />
   </React.StrictMode>,
   document.getElementById("root")
 );

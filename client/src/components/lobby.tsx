@@ -50,7 +50,6 @@ export const Lobby = (): JSX.Element => {
       {game && roomId && (
         <Box>
           <Paragraph>Game</Paragraph>
-          <pre>{JSON.stringify(game)}</pre>
           <Board board={game.board} />
         </Box>
       )}
