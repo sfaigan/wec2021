@@ -1,6 +1,6 @@
 import { Box, Grommet, Heading } from "grommet";
 import React from "react";
-import { Lobby } from "./example";
+import { Lobby } from "./lobby";
 import { SocketProvider } from "./sockets/context";
 
 export const App = (): JSX.Element => {

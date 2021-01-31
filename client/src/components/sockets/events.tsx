@@ -8,9 +8,15 @@ type Props = {
 
 export const socketEvents = ({ setValue }: Props): void => {
   socket.on("news", (news: string) => {
-    console.log(news);
+    console.log(socket.id);
     setValue((state) => {
-      return { ...state, news };
+      return { ...state, news, socketId: socket.id };
+    });
+  });
+
+  socket.on("connection", () => {
+    setValue((state) => {
+      return { ...state, socketId: socket.id };
     });
   });
 
@@ -22,18 +28,6 @@ export const socketEvents = ({ setValue }: Props): void => {
     console.log(code);
     setValue((state) => {
       return { ...state, roomId: code };
-    });
-  });
-
-  socket.on("queueLength", (queueLength: number) => {
-    setValue((state) => {
-      return { ...state, queueLength };
-    });
-  });
-
-  socket.on("positionInLine", (positionInLine: number) => {
-    setValue((state) => {
-      return { ...state, positionInLine };
     });
   });
 };

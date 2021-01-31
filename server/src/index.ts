@@ -7,7 +7,7 @@ import path from "path";
 import { Socket, Server } from "socket.io";
 import { generateId } from "./utils";
 import { createServer } from "http";
-import gamesRouter from "./routes/games";
+import { getGamesRouter } from "./routes/games";
 
 dotenv.config();
 
@@ -43,31 +43,12 @@ connection.once("open", () => {
   console.log("MongoDB database connection established successfully");
 });
 
-app.use("/api/games", gamesRouter);
-
-// TODO: temp;
-let users = {};
+app.use("/api/games", getGamesRouter(io));
 
 io.on("connection", (socket: Socket) => {
   console.log("Connected succesfully to the socket ...");
   // Example: Send news on the socket
   socket.emit("news", "Hello, world");
-
-  // Creating a game
-  socket.on("game/create", () => {
-    console.log(`User ${socket.id} created a game`);
-    // the new user, generate random room id
-    const roomId = generateId(4);
-
-    // const user = { id: s.id, roomId };
-    console.log(`${socket.id} user has create and joined room ${roomId}`);
-
-    socket.join(roomId);
-
-    // emit an notification that the game (lobby) was created successfully with the game code.
-    io.to(roomId).emit("game/success", { code: roomId });
-    users = { ...users, [socket.id]: { room: roomId } };
-  });
 
   // Joining a game using a game code
   socket.on("game/join", (code: string) => {
