@@ -1,31 +1,25 @@
-import axios from "axios";
 import { useContext } from "react";
+import { gameCreate, gameJoin } from "../components/sockets/emit";
 import SocketContext from "../components/sockets/socketContext";
 
 export const useGame = (): {
-  createGame: () => Promise<void>;
+  createGame: () => void;
   joinGame: (code: string) => Promise<void>;
   roomId?: string;
   socketId?: string;
+  game?: any;
 } => {
-  const { socketId, roomId } = useContext(SocketContext);
+  const { socketId, roomId, game } = useContext(SocketContext);
 
-  const createGame = async () => {
-    console.log(socketId);
-    try {
-      await axios.post("/api/games", { socketId: socketId });
-    } catch (err) {
-      console.log(err);
-    }
+  const createGame = () => {
+    console.log("createGame");
+    gameCreate(8);
   };
 
   const joinGame = async (code: string) => {
-    try {
-      await axios.post(`/api/games/join/${code}`, { socketId: socketId });
-    } catch (err) {
-      console.log(err);
-    }
+    console.log("joinGame");
+    gameJoin(code);
   };
 
-  return { createGame, joinGame, roomId, socketId };
+  return { createGame, joinGame, roomId, socketId, game };
 };

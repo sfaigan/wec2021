@@ -5,11 +5,13 @@ import { SocketProvider } from "./sockets/context";
 
 export const App = (): JSX.Element => {
   return (
-    <Grommet>
+    <Grommet full>
       <SocketProvider>
-        <Box align="center" background="neutral-2">
-          <Heading>Radville</Heading>
-          <Lobby />
+        <Box background="neutral-2" pad="large">
+          <Box>
+            <Lobby />
+          </Box>
+          <Box></Box>
         </Box>
       </SocketProvider>
     </Grommet>

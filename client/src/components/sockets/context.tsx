@@ -5,6 +5,7 @@ import { initSockets } from "./sockets";
 export type Store = {
   roomId?: string;
   socketId?: string;
+  game?: any;
 };
 
 export const SocketProvider = (props: {
@@ -13,7 +14,6 @@ export const SocketProvider = (props: {
   const [value, setValue] = useState<Store>({});
   useEffect(() => {
     initSockets({ setValue });
-    console.log(value);
   }, [initSockets]);
 
   return (

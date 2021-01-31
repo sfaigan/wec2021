@@ -7,6 +7,10 @@ import path from "path";
 import { Socket, Server } from "socket.io";
 import { createServer } from "http";
 import { getGamesRouter } from "./routes/games";
+import { Colour } from "./constants";
+import { Game } from "./models/game";
+import { generateBoard } from "./utils/board";
+import { MoveRequest } from "./types";
 
 dotenv.config();
 
@@ -53,16 +57,52 @@ io.on("connection", (socket: Socket) => {
   // Example: Send news on the socket
   socket.emit("news", "Hello, world");
 
-  // Joining a game using a game code
-  socket.on("game/join", (code: string) => {
-    console.log(`User ${socket.id} is to joining ${code}`);
-    socket.join(code);
-    socket.emit("game/success", { code });
+  socket.on("game/create", async (size: number) => {
+    console.log("game/create");
+    const board = generateBoard(size);
+    const turn = Colour.WHITE;
+    const game = new Game({ board, turn });
+    try {
+      const result = await game.save();
+      const roomId = result._id;
+      // join the game
+      socket.join(roomId);
+
+      // emit a notification that the game (lobby) was created successfully with the game code.
+      io.to(roomId).emit("game/success", { code: roomId, game: result });
+    } catch (error) {
+      console.error(error);
+    }
   });
 
-  // a basic ping that pings the entire lobby
-  socket.on("game/ping", (msg: string) => {
-    console.log(msg);
+  socket.on("game/update", async (move: MoveRequest, id: string) => {
+    try {
+      // grab the game via id
+      const game = await Game.findById(id);
+
+      // do updates
+
+      // save
+
+      // emit results to clients
+      io.to(id).emit("game/update", { game: game });
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  // Joining a game using a game code
+  socket.on("game/join", async (id: string) => {
+    console.log(`User ${socket.id} is to joining ${id}`);
+    try {
+      const game = await Game.findById(id);
+      if (game) {
+        socket.join(id);
+        io.to(id).emit("game/success", { code: id, game });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   // Leaving a game

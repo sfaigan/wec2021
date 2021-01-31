@@ -9,3 +9,15 @@ export const getQueueLength = () => {
 export const removeUserFromQueue = () => {
   socket.emit("removeUserFromQueue");
 };
+
+export const gameCreate = (size: number): void => {
+  socket.emit("game/create", { size });
+};
+
+export const gameJoin = (code: string): void => {
+  socket.emit("game/create", { id: code });
+};
+
+export const gameUpdate = (): void => {
+  socket.emit("game/update", {});
+};

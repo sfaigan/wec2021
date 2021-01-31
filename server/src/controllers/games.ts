@@ -51,7 +51,7 @@ const joinById = async (
   try {
     const game = await Game.findById(id);
     socket.join(id);
-    io.to(id).emit("game/success", { code: id });
+    io.to(id).emit("game/success", { code: id, game: game });
     res.status(200).send(game);
   } catch (error) {
     console.error(error);
@@ -69,8 +69,6 @@ const create = async (
   const size = req?.body?.size ?? 8;
   const board = generateBoard(size);
   const turn = Colour.WHITE;
-
-  console.log(req.body);
 
   const game = new Game({ board, turn });
   const sid = (req.body.socketId as string) || undefined;
@@ -91,7 +89,8 @@ const create = async (
     socket.join(roomId);
 
     // emit a notification that the game (lobby) was created successfully with the game code.
-    io.to(roomId).emit("game/success", { code: roomId });
+    console.log(roomId, result);
+    socket.to(roomId).emit("game/success", { code: roomId, game: result });
     res.status(200).send(result);
   } catch (error) {
     console.error(error);

@@ -1,11 +1,19 @@
-import { Box, Button, Form, FormField, Paragraph, TextInput } from "grommet";
+import {
+  Box,
+  Button,
+  Form,
+  FormField,
+  Heading,
+  Paragraph,
+  TextInput,
+} from "grommet";
 import React, { useState } from "react";
 import { useGame } from "../hooks/useGame";
 
 export const Lobby = (): JSX.Element => {
   const [value, setValue] = useState("");
 
-  const { createGame, joinGame, roomId, socketId } = useGame();
+  const { createGame, joinGame, roomId, socketId, game } = useGame();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onChange = (event: any) => {
@@ -20,9 +28,12 @@ export const Lobby = (): JSX.Element => {
 
   return (
     <Box>
+      <Heading>Radville Chess!</Heading>
       <Paragraph>Debug</Paragraph>
-      <pre>roomId: {roomId || ""}</pre>
-      <pre>socketId: {socketId || ""}</pre>
+      <pre>
+        roomId: {roomId || ""}
+        socketId: {socketId || ""}
+      </pre>
       <Button primary onClick={() => createGame()}>
         Create Game
       </Button>
@@ -35,6 +46,12 @@ export const Lobby = (): JSX.Element => {
           <Button type="reset" label="Reset" />
         </Box>
       </Form>
+      {game && roomId && (
+        <Box>
+          <Paragraph>Game</Paragraph>
+          <pre>{JSON.stringify(game)}</pre>
+        </Box>
+      )}
     </Box>
   );
 };

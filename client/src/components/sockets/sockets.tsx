@@ -13,8 +13,6 @@ type Props = {
 
 export const initSockets = ({ setValue }: Props): void => {
   socketEvents({ setValue });
-  console.log("la");
-  console.log(socket);
   // setValue    ^ is passed on to be used by socketEvents
   setValue((state) => {
     return { ...state, socketId: socket.id };
